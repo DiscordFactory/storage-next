@@ -1,0 +1,13 @@
+enum Yellow {
+  YELLOW_100 = '#FEF9C3',
+  YELLOW_200 = '#FEF08A',
+  YELLOW_300 = '#FDE047',
+  YELLOW_400 = '#FACC15',
+  YELLOW_500 = '#EAB308',
+  YELLOW_600 = '#CA8A04',
+  YELLOW_700 = '#A16207',
+  YELLOW_800 = '#854D0E',
+  YELLOW_900 = '#713F12',
+}
+
+export default Yellow

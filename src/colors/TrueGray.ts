@@ -1,0 +1,13 @@
+enum TrueGray {
+  TRUE_GRAY_100 = '#F5F5F5',
+  TRUE_GRAY_200 = '#E5E5E5',
+  TRUE_GRAY_300 = '#D4D4D4',
+  TRUE_GRAY_400 = '#A3A3A3',
+  TRUE_GRAY_500 = '#737373',
+  TRUE_GRAY_600 = '#525252',
+  TRUE_GRAY_700 = '#404040',
+  TRUE_GRAY_800 = '#262626',
+  TRUE_GRAY_900 = '#171717'
+}
+
+export default TrueGray

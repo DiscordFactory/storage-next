@@ -1,0 +1,13 @@
+enum LightBlue {
+  LIGHT_BLUE_100 = '#E0F2FE',
+  LIGHT_BLUE_200 = '#BAE6FD',
+  LIGHT_BLUE_300 = '#7DD3FC',
+  LIGHT_BLUE_400 = '#38BDF8',
+  LIGHT_BLUE_500 = '#0EA5E9',
+  LIGHT_BLUE_600 = '#0284C7',
+  LIGHT_BLUE_700 = '#0369A1',
+  LIGHT_BLUE_800 = '#075985',
+  LIGHT_BLUE_900 = '#0C4A6E',
+}
+
+export default LightBlue

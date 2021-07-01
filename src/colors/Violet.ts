@@ -1,0 +1,13 @@
+enum Violet {
+  VIOLET_100 = '#EDE9FE',
+  VIOLET_200 = '#DDD6FE',
+  VIOLET_300 = '#C4B5FD',
+  VIOLET_400 = '#A78BFA',
+  VIOLET_500 = '#8B5CF6',
+  VIOLET_600 = '#7C3AED',
+  VIOLET_700 = '#6D28D9',
+  VIOLET_800 = '#5B21B6',
+  VIOLET_900 = '#4C1D95'
+}
+
+export default Violet

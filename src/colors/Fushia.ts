@@ -1,0 +1,13 @@
+enum Fuchsia {
+  FUCHSIA_100 = '#FAE8FF',
+  FUCHSIA_200 = '#F5D0FE',
+  FUCHSIA_300 = '#F0ABFC',
+  FUCHSIA_400 = '#E879F9',
+  FUCHSIA_500 = '#D946EF',
+  FUCHSIA_600 = '#C026D3',
+  FUCHSIA_700 = '#A21CAF',
+  FUCHSIA_800 = '#86198F',
+  FUCHSIA_900 = '#701A75'
+}
+
+export default Fuchsia
