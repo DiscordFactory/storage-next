@@ -1,20 +1,21 @@
 import { BaseAddon } from '@discord-factory/core-next'
-import Guard from './Guard'
-import CommandManager from './managers/CommandManager'
-import { Command, BaseCommand } from './entities/Command'
-import MessageCreate from './events/MessageCreate'
+import Storage from './Storage'
+import { Migration, BaseMigration } from './entities/Migration'
+import { Schema, Table } from './types'
+import MakeMigration from './commands/MakeMigration'
 
 export default class Index extends BaseAddon<Index> {
-  public addonName = 'basic_commands'
-  public commandManager: CommandManager = new CommandManager(this)
-  public guard: Guard = new Guard(this)
+  public addonName = 'storage'
+  public storage: Storage | undefined
 
   public registerHooks () {
     return []
   }
 
   public registerCLI () {
-    return []
+    return [
+      MakeMigration,
+    ]
   }
 
   public registerCommands () {
@@ -23,16 +24,17 @@ export default class Index extends BaseAddon<Index> {
 
   public registerEvents () {
     return [
-      MessageCreate
     ]
   }
 
   public defineKeys () {
-    return ['APP_PREFIX', 'COMMAND_AUTO_REMOVE']
+    return ['DRIVER', 'PATH']
   }
 }
 
 export {
-  Command,
-  BaseCommand,
+  Migration,
+  BaseMigration,
+  Schema,
+  Table,
 }

@@ -1,0 +1,14 @@
+import { Migration, BaseMigration, Schema, Table } from '@discord-factory/storage-next'
+
+@Migration()
+export default class $migrationName extends BaseMigration {
+  public async up (schema: Schema): Promise<any> {
+    return schema.createTable('$tableName', (table: Table) => {
+      // Your database migration here
+    })
+  }
+
+  public async down (schema: Schema): Promise<any> {
+    return schema.dropTableIfExists('$tableName')
+  }
+}

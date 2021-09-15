@@ -1,11 +1,18 @@
-import { PermissionResolvable } from 'discord.js'
+import { Knex } from 'knex'
+import SchemaBuilder = Knex.SchemaBuilder
+import CreateTableBuilder = Knex.CreateTableBuilder
 
-export type CommandContext = {
-  label: string
-  description: string
-  tag: string
-  usages?: Array<string>
-  alias?: Array<string>
-  roles?: Array<string>
-  permissions?: Array<PermissionResolvable>
+export type driverType = 'sqlite3' | 'mariadb'
+
+export interface Table extends CreateTableBuilder {
+
+}
+
+export interface Schema {
+  createTable (tableName: string, callback: (table: Table) => void): void
+  dropTableIfExists (tableName: string): SchemaBuilder | undefined
+}
+
+export interface KnexClient {
+  schema: SchemaBuilder
 }
