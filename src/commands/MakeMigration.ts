@@ -5,7 +5,7 @@ import fs from 'fs'
 import Logger from '@leadcodedev/logger'
 
 @CLICommand({
-  name: 'Create command file',
+  name: 'Create migration file',
   prefix: 'make:migration',
   usages: ['filename']
 })

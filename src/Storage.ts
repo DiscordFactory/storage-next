@@ -9,10 +9,9 @@ export default class Storage {
   public migrationManager: MigrationManager = new MigrationManager(this)
 
   constructor (public addon: Addon) {
-    this.initialize()
   }
 
-  private async initialize () {
+  public async initialize () {
     const driver: driverType = this.addon.context.getModuleEnvironment('Storage', 'DRIVER') as driverType
     const databaseLocation: string = this.addon.context.getModuleEnvironment('Storage', 'PATH') as string
 

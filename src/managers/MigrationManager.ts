@@ -7,10 +7,9 @@ export default class MigrationManager {
   public migrations: MigrationEntity[] = []
 
   constructor (public storage: Storage) {
-    this.run()
   }
 
-  private async run () {
+  public async initialize () {
     const baseDir = path.join(process.cwd(), 'src')
 
     const fetchedFiles = await fetch(
@@ -32,6 +31,7 @@ export default class MigrationManager {
 
             const migration = new MigrationEntity(
               this.storage.addon,
+              Class.tableName,
               Class.up,
               Class.down,
             )
