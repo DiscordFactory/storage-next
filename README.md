@@ -147,7 +147,7 @@ export default class Foo extends BaseModel {
 }
 ```
 
-## EXAMPLES
+## Examples
 Considering the following migration and model
 
 ```ts
