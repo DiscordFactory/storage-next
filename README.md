@@ -195,11 +195,11 @@ const user = await User.query().create(data) as User 👈 // You should to defin
 console.log(user)
 ```
 ```
-{
+console.log({
   id: '0ab2a318-d1b0-4c1e-a7d1-31b42b2153cd',
   firstname: 'John',
   lastname: 'Doe'
-}
+})
 ```
 
 ### Create many resource
@@ -213,7 +213,7 @@ const users = await User.query().createMany(data) as User[] 👈 // You should t
 console.log(users)
 ```
 ```
-[
+console.log([
   {
     id: '0ab2a318-d1b0-4c1e-a7d1-31b42b2153cd',
     firstname: 'John',
@@ -224,7 +224,7 @@ console.log(users)
     firstname: 'Sarah',
     lastname: 'Doe'
   }
-]
+])
 ```
 
 ### Update one resource
@@ -242,11 +242,11 @@ const user = await User.query().updateWhere(data, selector) as User 👈 // You 
 console.log(user)
 ```
 ```
-{
+console.log({
   id: '0ab2a318-d1b0-4c1e-a7d1-31b42b2153cd',
   firstname: 'John',
   lastname: 'Doe'
-}
+})
 ```
 
 ### Update one resource
