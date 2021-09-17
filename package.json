@@ -5,7 +5,7 @@
   "main": "build/index.js",
   "author": "Baptiste Parmantier <baptiste.parmantier.pro@gmail.com>",
   "license": "MIT",
-  "repository": "git@github.com:DiscordFactory/basic-commands.git",
+  "repository": "git@github.com:DiscordFactory/storage-next.git",
   "keywords": [],
   "scripts": {
     "dev": "tsc --watch",
