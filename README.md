@@ -249,7 +249,7 @@ console.log({
 })
 ```
 
-### Update one resource
+### Delete one resource
 ```ts
 const selector = {
   id: '0ab2a318-d1b0-4c1e-a7d1-31b42b2153cd'
