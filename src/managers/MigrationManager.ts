@@ -10,11 +10,13 @@ export default class MigrationManager {
   }
 
   public async initialize () {
-    const baseDir = path.join(process.cwd(), 'src')
+    const baseDir = path.join(process.cwd(), process.env.NODE_ENV === 'development'
+      ? 'src'
+      : 'build', 'src')
 
     const fetchedFiles = await fetch(
       baseDir,
-      [process.env.NODE_ENV === 'production' ? 'js' : 'ts'],
+      [process.env.NODE_ENV === 'development' ? 'ts' : 'js'],
       'utf-8',
       ['node_modules', 'test']
     )

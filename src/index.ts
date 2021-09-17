@@ -1,10 +1,13 @@
 import { BaseAddon } from '@discord-factory/core-next'
 import Storage from './Storage'
 import { Migration, BaseMigration } from './entities/Migration'
+import { Model, BaseModel } from './entities/Model'
 import { Schema, Table } from './types'
 import MakeMigration from './commands/MakeMigration'
 import RunMigration from './commands/RunMigration'
 import DownMigration from './commands/DownMigration'
+import MakeModel from './commands/MakeModel'
+import Uuid from './Uuid'
 
 export default class Index extends BaseAddon<Index> {
   public addonName = 'storage'
@@ -13,6 +16,8 @@ export default class Index extends BaseAddon<Index> {
   public async init (): Promise<Index> {
     await this.storage.initialize()
     await this.storage.migrationManager.initialize()
+    await this.storage.modelManager.initialize()
+
     return this
   }
 
@@ -22,6 +27,7 @@ export default class Index extends BaseAddon<Index> {
 
   public registerCLI () {
     return [
+      MakeModel,
       MakeMigration,
       RunMigration,
       DownMigration,
@@ -45,6 +51,9 @@ export default class Index extends BaseAddon<Index> {
 export {
   Migration,
   BaseMigration,
+  Model,
+  BaseModel,
   Schema,
   Table,
+  Uuid,
 }

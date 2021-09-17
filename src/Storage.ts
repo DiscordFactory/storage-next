@@ -3,10 +3,12 @@ import Knex from 'knex'
 import { driverType, KnexClient } from './types'
 import path from 'path'
 import MigrationManager from './managers/MigrationManager'
+import ModelManager from './managers/ModelManager'
 
 export default class Storage {
   public databaseClient: KnexClient | undefined
   public migrationManager: MigrationManager = new MigrationManager(this)
+  public modelManager: ModelManager = new ModelManager(this)
 
   constructor (public addon: Addon) {
   }
@@ -19,8 +21,10 @@ export default class Storage {
       client: driver,
       useNullAsDefault: true,
       connection: {
-        filename: path.resolve(process.cwd(), databaseLocation)
+        filename: path.join(process.cwd(), databaseLocation),
       }
     })
+
+    return this.databaseClient
   }
 }
