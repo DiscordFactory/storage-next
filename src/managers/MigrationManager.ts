@@ -10,13 +10,13 @@ export default class MigrationManager {
   }
 
   public async initialize () {
-    const baseDir = path.join(process.cwd(), process.env.NODE_ENV === 'development'
-      ? 'src'
-      : 'build', 'src')
+    const baseDir = path.join(process.cwd(), process.env.NODE_ENV === 'production'
+      ? path.join('build', 'src')
+      : 'src')
 
     const fetchedFiles = await fetch(
       baseDir,
-      [process.env.NODE_ENV === 'development' ? 'ts' : 'js'],
+      [process.env.NODE_ENV === 'production' ? 'js' : 'ts'],
       'utf-8',
       ['node_modules', 'test']
     )
@@ -42,10 +42,5 @@ export default class MigrationManager {
           }
         }
       }))
-
-    // this.migrations.forEach(async (migration: MigrationEntity) => {
-      // await migration.up(this.storage.databaseClient?.schema)
-      // await migration.down(this.storage.databaseClient?.schema)
-    // })
   }
 }
