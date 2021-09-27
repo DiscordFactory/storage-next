@@ -195,6 +195,7 @@ console.log({
   firstname: 'John',
   lastname: 'Doe'
 })
+```
 
 ### Get one resource by column
 ```ts
@@ -207,6 +208,7 @@ console.log({
   firstname: 'John',
   lastname: 'Doe'
 })
+```
 
 ### Create one resource
 ```ts
