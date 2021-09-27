@@ -184,6 +184,30 @@ export default class User extends BaseModel {
 }
 ```
 
+### Get one resource
+```ts
+const user = await User.query().find('0ab2a318-d1b0-4c1e-a7d1-31b42b2153cd') as User
+console.log(user)
+```
+```
+console.log({
+  id: '0ab2a318-d1b0-4c1e-a7d1-31b42b2153cd',
+  firstname: 'John',
+  lastname: 'Doe'
+})
+
+### Get one resource by column
+```ts
+const user = await User.query().findBy('id', '0ab2a318-d1b0-4c1e-a7d1-31b42b2153cd') as User
+console.log(user)
+```
+```
+console.log({
+  id: '0ab2a318-d1b0-4c1e-a7d1-31b42b2153cd',
+  firstname: 'John',
+  lastname: 'Doe'
+})
+
 ### Create one resource
 ```ts
 const data = {
