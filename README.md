@@ -6,13 +6,9 @@ In order to answer this need, [Discord Factory](https://github.com/DiscordFactor
 ## Getting started
 First, you need to import the module with the following command :
 
-With NPM
-```
+```bash
 npm install @discord-factory/storage-next@lasted
-```
-
-With YARN
-```
+# or
 yarn add @discord-factory/storage-next@lasted
 ```
 
@@ -20,17 +16,30 @@ yarn add @discord-factory/storage-next@lasted
 The `@discord-factory/storage-next` module provides you with 2 commands allowing you to instantly create a template and a migration :
 
 Make model
-```
-npm run make:model MyModel
-yarn make:model MyModel
+```bash
+npm run factory make:model MyModel
+# or
+yarn factory make:model MyModel
 ```
 Make migration
-```
-npm run make:migration MyMigration
-yarn make:migration MyMigration
+```bash
+npm run factory make:migration MyMigration
+# or
+yarn factory make:migration MyMigration
 ```
 
 ### How does the module work ?
+In the first time, please add the module into the `/start/Kernel.ts`
+```ts
+import StorageNext from '@discord-factory/core-next'
+
+export default class Kernel {
+  public registerAddons () {
+    return [StorageNext]
+  }
+}
+```
+
 As a developer, you need to separate your application into several levels.
 When using a database, you will need to define a model and migration to interoperate with your database.
 
@@ -41,9 +50,9 @@ A `migration` is a file that interacts with the database in order to create, alt
 
 A migration can be managed through the following command and will have a minimal structure as shown below :
 ```bash
-npm run make:migration Folder/SubFolder/Foo
+npm run factory make:migration Folder/SubFolder/Foo
 # or
-yarn make:migration Folder/SubFolder/Foo
+yarn factory make:migration Folder/SubFolder/Foo
 ```
 
 ```ts
@@ -85,15 +94,15 @@ export default class Foo_1631887311895 extends BaseMigration {
 In order to insert the tables defined in your migrations,
 you will need to run the command below in a terminal at the root of your application.
 ```bash
-npm run migration:run
+npm run factory migration:run
 # or
-yarn migration:run
+yarn factory migration:run
 ```
 You can delete them from your database with the following command
 ```bash
-npm run migration:rollback
+npm run factory migration:rollback
 # or
-yarn migration:rollback
+yarn factory migration:rollback
 ```
 
 The `model` is a file that allows you to interact with the table defined in it.
@@ -103,9 +112,9 @@ A model can be managed through the following command and will have a minimal str
 
 A migration can be managed through the following command and will have a minimal structure as shown below :
 ```bash
-npm run make:model Folder/SubFolder/Foo
+npm run factory make:model Folder/SubFolder/Foo
 # or
-yarn make:model Folder/SubFolder/Foo
+yarn factory make:model Folder/SubFolder/Foo
 ```
 
 ```ts
