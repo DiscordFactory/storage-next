@@ -1,3 +1,4 @@
+```ts
 import { Model, BaseModel, Uuid } from '@discord-factory/storage-next'
 
 @Model('foo')
@@ -9,3 +10,4 @@ export default class FooModel extends BaseModel {
     model.id = Uuid.generateV4()
   }
 }
+```
