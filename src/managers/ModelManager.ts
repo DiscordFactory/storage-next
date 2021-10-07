@@ -1,4 +1,3 @@
-import { MigrationEntity } from '../entities/Migration'
 import path from 'path'
 import { fetch } from 'fs-recursive'
 import Storage from '../Storage'
