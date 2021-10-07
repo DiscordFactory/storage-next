@@ -168,10 +168,13 @@ export type RelationOptions = {
   relationKey: string
 }
 
+type RelationResolvable = {
+  model: typeof Model,
+  options: RelationOptions
+}
+
 export type Relations = {
-  hasMany: Map<string, {
-    model: typeof Model,
-    options: RelationOptions
-  }>
+  hasMany: Map<string, RelationResolvable>
+  belongTo: Map<string, RelationResolvable>
 }
 

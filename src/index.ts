@@ -1,7 +1,7 @@
 import { BaseAddon } from '@discord-factory/core-next'
 import Storage from './Storage'
 import { Migration, BaseMigration } from './entities/Migration'
-import { Model, BaseModel, hasMany } from './entities/Model'
+import { Model, BaseModel, hasMany, belongTo } from './entities/Model'
 import { Schema, Table } from './types'
 import MakeMigration from './commands/MakeMigration'
 import RunMigration from './commands/RunMigration'
@@ -57,5 +57,6 @@ export {
   Table,
   Uuid,
 
-  hasMany
+  hasMany,
+  belongTo
 }

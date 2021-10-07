@@ -66,36 +66,67 @@ export class QueryBuilder<M> {
     await this.getQuery().where(selector).delete()
   }
 
-  private relationExist (alias: string): void {
-    const relationModel = this.model.relations.hasMany.get(alias)
-    if (relationModel === undefined) {
+  private relationExist (alias: string) {
+    const relationHasManyModel = this.model.relations.hasMany?.get(alias)
+    const relationBelongToModel = this.model.relations.belongTo?.get(alias)
+
+    const hasRelationResolvable = relationHasManyModel === undefined
+      && relationBelongToModel === undefined
+
+    if (hasRelationResolvable) {
       throw new Error(`No relationship exists under the name "${alias}"`)
     }
+
+    return {
+      relationHasManyModel,
+      relationBelongToModel
+    }
   }
+  // public async preload (alias: string): Promise<M[]> {
+  public async preload (alias: string) {
+    const { relationHasManyModel, relationBelongToModel } = this.relationExist(alias)
 
-  public async preload (alias: string): Promise<M[]> {
-    this.relationExist(alias)
-    const relationModel = this.model.relations.hasMany.get(alias)
-    const classObject = await this.getQuery()
-      .select('*')
-      .from(this.model.tableName) as M[]
+    // HasMany relation
+    if (relationHasManyModel !== undefined) {
+      const classObject = await this.getQuery()
+        .select('*')
+        .from(this.model.tableName) as M[]
 
-    return Promise.all(
-      classObject.map(async (e) => {
-        const tableName = alias.slice(0, alias.length - 1)
+      return Promise.all(
+        classObject.map(async (e) => {
+          const tableName = alias.slice(0, alias.length - 1)
 
-        const b = await this.getQuery()
-          .from(tableName)
-          .where(`${tableName}.${relationModel!.options.relationKey || `${this.model.tableName}Id`}`, e[relationModel!.options.localKey || 'id'])
+          const b = await this.getQuery()
+            .from(tableName)
+            .where(`${tableName}.${relationHasManyModel.options?.relationKey || `${this.model.tableName}Id`}`, e[relationHasManyModel.options?.localKey || 'id'])
 
-        return { ...e, [alias]: b}
-      })
-    )
+          return { ...e, [alias]: b}
+        })
+      )
+    }
+
+    // BelonTo relation
+    if (relationBelongToModel !== undefined) {
+      const classObject = await this.getQuery()
+        .select('*')
+        .from(this.model.tableName) as M[]
+
+      return Promise.all(
+        classObject.map(async (e) => {
+          const b = await this.getQuery()
+            .from(alias)
+            .where(`${alias}.${relationBelongToModel.options?.relationKey || 'id'}`, e[relationBelongToModel.options?.localKey || `${alias}Id`])
+            .first()
+
+          return { ...e, [alias]: b}
+        })
+      )
+    }
   }
 
   public async preloadFirst (alias: string): Promise<M> {
     this.relationExist(alias)
     const model = await this.preload(alias)
-    return model[0]
+    return model![0]
   }
 }
