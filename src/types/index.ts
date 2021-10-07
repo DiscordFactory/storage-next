@@ -1,6 +1,7 @@
 import { Knex } from 'knex'
 import SchemaBuilder = Knex.SchemaBuilder
 import CreateTableBuilder = Knex.CreateTableBuilder
+import { Model } from '../entities/Model'
 
 export type driverType = 'sqlite3' | 'mariadb'
 
@@ -162,3 +163,15 @@ export type KnexQueryBuilder<TRecord extends {} = any, TResult = any> = {
 
   truncate(): Knex.QueryBuilder<TRecord, void>
 }
+export type RelationOptions = {
+  localKey: string
+  relationKey: string
+}
+
+export type Relations = {
+  hasMany: Map<string, {
+    model: typeof Model,
+    options: RelationOptions
+  }>
+}
+
