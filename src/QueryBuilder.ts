@@ -1,10 +1,11 @@
 import { KnexClient, ObjectResolvable, Relations, TypeResolvable } from './types'
 import { Knex } from 'knex'
 import { KnexQueryBuilder } from './types'
+import Related from './queries/Related'
 
 export class QueryBuilder<M> {
   constructor (
-    private model: M & {
+    public model: M & {
       tableName: string,
       relations: Relations
       beforeInsert (values: ObjectResolvable): void,
@@ -14,8 +15,8 @@ export class QueryBuilder<M> {
   ) {
   }
 
-  private getQuery (): Knex.QueryBuilder {
-    return (this as any).knexClient((this as any).model.tableName)
+  public getQuery (): Knex.QueryBuilder {
+    return (this as any).knexClient(this.model.tableName)
   }
 
   public async lastInsert (count?: number): Promise<M | M[]> {
@@ -128,5 +129,9 @@ export class QueryBuilder<M> {
     this.relationExist(alias)
     const model = await this.preload(alias)
     return model![0]
+  }
+
+  public related (modelName: string): Related {
+    return new Related(modelName, this)
   }
 }

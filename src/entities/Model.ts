@@ -67,6 +67,19 @@ export function belongTo (relation: typeof BaseModel, options?: RelationOptions)
   } as any
 }
 
+export function manyToMany (relation: typeof BaseModel, options?: RelationOptions) {
+  return function (target: any, propertyKey: string) {
+    if (!target.manyToMany) {
+      target.manyToMany = new Collection<string, { new (): BaseModel }>()
+    }
+
+    target.manyToMany.set(propertyKey, {
+      model: relation,
+      options
+    })
+  } as any
+}
+
 export abstract class BaseModel {
   public static query (): QueryBuilder<BaseModel> {
     return BaseModel.query()
