@@ -176,5 +176,16 @@ type RelationResolvable = {
 export type Relations = {
   hasMany: Map<string, RelationResolvable>
   belongTo: Map<string, RelationResolvable>
+  manyToMany: Map<string, RelationResolvable>
 }
 
+export type ValueTypeResolvable = string | boolean | number | string[] | boolean[] | number[]
+
+export type ResponseResolvable = { [K: string]: ValueTypeResolvable }
+
+export type CompletModel = {
+  tableName: string,
+  relations: Relations
+  beforeInsert (values: ObjectResolvable): void,
+  beforeSave (values: ObjectResolvable): void
+}
