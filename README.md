@@ -287,7 +287,7 @@ const data = {
 }
 
 const user = await User.find('0ab2a318-d1b0-4c1e-a7d1-31b42b2153cd')
-await user.update(data) as User 👈 // You should to define type if you want auto-complétion
+await user.update(data)
 ```
 
 ### Delete one resource
