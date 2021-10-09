@@ -2,7 +2,7 @@ import { BaseAddon } from '@discord-factory/core-next'
 import Addon from '../index'
 import { Schema } from '../types'
 
-export function Migration () {
+export function Migration (): (target: Function) => any {
   return (target: Function) => {
     const migration = new target.prototype.constructor
     return class Migration extends MigrationEntity {
@@ -14,7 +14,7 @@ export function Migration () {
           target.prototype.down
         )
       }
-    } as any
+    }
   }
 }
 

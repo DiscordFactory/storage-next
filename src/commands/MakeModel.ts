@@ -1,17 +1,21 @@
-import { CLICommand, BaseAddonCommand } from '@discord-factory/core-next'
+import { CLI, BaseCli, CliContextRuntime } from '@discord-factory/core-next'
 import Addon from '../index'
 import path from 'path'
 import fs from 'fs'
 import Logger from '@leadcodedev/logger'
 
-@CLICommand({
-  name: 'Create migration file',
+@CLI({
   prefix: 'make:model',
-  usages: ['filename']
+  description: 'Run migrations',
+  args: ['filename'],
+  config: {
+    allowUnknownOptions: false,
+    ignoreOptionDefaultValue: false
+  }
 })
-export default class MakeModel extends BaseAddonCommand<Addon> {
-  public async run (filename: string): Promise<void> {
-    const location = path.parse(filename)
+export default class MakeModel extends BaseCli<Addon> {
+  public async run ({ args }: CliContextRuntime): Promise<void> {
+    const location = path.parse(args.filename as string)
     const targetFile = path.join(process.cwd(), 'src', location.dir, `${location.name}.ts`)
 
     const templateFile = await fs.promises.readFile(

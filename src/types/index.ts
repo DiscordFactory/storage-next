@@ -1,6 +1,7 @@
 import { Knex } from 'knex'
 import SchemaBuilder = Knex.SchemaBuilder
 import CreateTableBuilder = Knex.CreateTableBuilder
+import { Model } from '../entities/Model'
 
 export type driverType = 'sqlite3' | 'mariadb'
 
@@ -161,4 +162,30 @@ export type KnexQueryBuilder<TRecord extends {} = any, TResult = any> = {
   first: Knex.Select<TRecord, DeferredKeySelection.AddUnionMember<UnwrapArrayMember<TResult>, undefined>>
 
   truncate(): Knex.QueryBuilder<TRecord, void>
+}
+export type RelationOptions = {
+  localKey: string
+  relationKey: string
+}
+
+type RelationResolvable = {
+  model: typeof Model,
+  options: RelationOptions
+}
+
+export type Relations = {
+  hasMany: Map<string, RelationResolvable>
+  belongTo: Map<string, RelationResolvable>
+  manyToMany: Map<string, RelationResolvable>
+}
+
+export type ValueTypeResolvable = string | boolean | number | string[] | boolean[] | number[]
+
+export type ResponseResolvable = { [K: string]: ValueTypeResolvable }
+
+export type CompletModel = {
+  tableName: string,
+  relations: Relations
+  beforeInsert (values: ObjectResolvable): void,
+  beforeSave (values: ObjectResolvable): void
 }
