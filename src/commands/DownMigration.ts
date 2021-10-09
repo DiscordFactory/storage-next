@@ -1,14 +1,17 @@
-import { CLICommand, BaseAddonCommand } from '@discord-factory/core-next'
+import { CLI, BaseCli } from '@discord-factory/core-next'
 import Addon from '../index'
 import Logger from '@leadcodedev/logger'
 import { MigrationEntity } from '../entities/Migration'
 
-@CLICommand({
-  name: 'Create migration file',
+@CLI({
   prefix: 'migration:rollback',
-  usages: []
+  description: 'Run migrations',
+  config: {
+    allowUnknownOptions: false,
+    ignoreOptionDefaultValue: false
+  }
 })
-export default class DownMigration extends BaseAddonCommand<Addon> {
+export default class DownMigration extends BaseCli<Addon> {
   public async run (): Promise<void> {
     await Promise.all(
       this.context!.addon.storage!.migrationManager.migrations.map(async (migration: MigrationEntity) => {
