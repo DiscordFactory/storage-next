@@ -31,7 +31,7 @@ yarn factory make:migration MyMigration
 ### How does the module work ?
 In the first time, please add the module into the `/start/Kernel.ts`
 ```ts
-import StorageNext from '@discord-factory/core-next'
+import StorageNext from '@discord-factory/storage-next'
 
 export default class Kernel {
   public registerAddons () {
@@ -156,7 +156,7 @@ export default class Foo extends BaseModel {
 }
 ```
 
-## Examples
+## Basic examples
 Considering the following migration and model
 
 ```ts
@@ -195,7 +195,8 @@ export default class User extends BaseModel {
 
 ### Get one resource
 ```ts
-const user = await User.query().find('0ab2a318-d1b0-4c1e-a7d1-31b42b2153cd') as User
+const user = await User.find('0ab2a318-d1b0-4c1e-a7d1-31b42b2153cd') as User
+
 console.log(user)
 ```
 ```ts
@@ -208,7 +209,8 @@ console.log({
 
 ### Get one resource by column
 ```ts
-const user = await User.query().findBy('id', '0ab2a318-d1b0-4c1e-a7d1-31b42b2153cd') as User
+const user = await User.findBy('id', '0ab2a318-d1b0-4c1e-a7d1-31b42b2153cd') as User
+const user = await User.findBy({ id: '0ab2a318-d1b0-4c1e-a7d1-31b42b2153cd' }) as User
 console.log(user)
 ```
 ```ts
@@ -219,6 +221,21 @@ console.log({
 })
 ```
 
+### Get all resource from table
+```ts
+const user = await User.all() as User[]
+console.log(user)
+```
+```ts
+console.log([
+  {
+    id: '0ab2a318-d1b0-4c1e-a7d1-31b42b2153cd',
+    firstname: 'John',
+    lastname: 'Doe'
+  }
+])
+```
+
 ### Create one resource
 ```ts
 const data = {
@@ -226,7 +243,7 @@ const data = {
   lastname: 'Doe',
 }
 
-const user = await User.query().create(data) as User 👈 // You should to define type if you want auto-complétion
+const user = await User.create(data) as User 👈 // You should to define type if you want auto-complétion
 console.log(user)
 ```
 ```ts
@@ -244,7 +261,7 @@ const data = [
   { firstname: 'Sarah', lastname: 'Doe' }
 ]
 
-const users = await User.query().createMany(data) as User[] 👈 // You should to define type if you want auto-complétion
+const users = await User.createMany(data) as User[] 👈 // You should to define type if you want auto-complétion
 console.log(users)
 ```
 ```ts
@@ -269,28 +286,14 @@ const data = {
   lastname: 'Doe',
 }
 
-const selector = {
-  id: '0ab2a318-d1b0-4c1e-a7d1-31b42b2153cd'
-}
-
-const user = await User.query().updateWhere(data, selector) as User 👈 // You should to define type if you want auto-complétion
-console.log(user)
-```
-```ts
-console.log({
-  id: '0ab2a318-d1b0-4c1e-a7d1-31b42b2153cd',
-  firstname: 'John',
-  lastname: 'Doe'
-})
+const user = await User.find('0ab2a318-d1b0-4c1e-a7d1-31b42b2153cd')
+await user.update(data) as User 👈 // You should to define type if you want auto-complétion
 ```
 
 ### Delete one resource
 ```ts
-const selector = {
-  id: '0ab2a318-d1b0-4c1e-a7d1-31b42b2153cd'
-}
-
-await User.query().delete(selector)
+const user = await User.find('0ab2a318-d1b0-4c1e-a7d1-31b42b2153cd')
+await User.delete()
 ```
 
 ## License
