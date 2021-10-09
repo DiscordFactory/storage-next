@@ -221,7 +221,7 @@ console.log({
 })
 ```
 
-### Get all resource from table
+### Get all resources from table
 ```ts
 const user = await User.all() as User[]
 console.log(user)
