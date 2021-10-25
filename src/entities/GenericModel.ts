@@ -4,7 +4,7 @@ import Related from '../queries/Related'
 import Crud from '../queries/Crud'
 
 export default class GenericModel<M> {
-  private crud = new Crud(this, this.$queryBuilder)
+  private crud = new Crud(this, this.$queryBuilder.queryBuilder)
   constructor (fields: ResponseResolvable, private $queryBuilder) {
     Object.entries(fields).forEach(([key, value]) => {
       this[key] = value

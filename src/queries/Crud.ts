@@ -1,6 +1,7 @@
 import { ObjectResolvable, ResponseResolvable, TypeResolvable } from '../types'
 import GenericModel from '../entities/GenericModel'
 import { QueryBuilder } from '../QueryBuilder'
+import Logger from '@leadcodedev/logger'
 
 export default class Crud<M> {
   constructor (private genericModel: GenericModel<M>, private queryBuilder: QueryBuilder<M>) {
@@ -23,6 +24,10 @@ export default class Crud<M> {
       .where({ [column]: value })
       .first()
 
+    if (!response) {
+      Logger.send('error', `${this.queryBuilder.model.tableName} has nothing entries in your database.`)
+      return new GenericModel({}, this) as unknown as M
+    }
     return new GenericModel(response, this) as unknown as M
   }
 
