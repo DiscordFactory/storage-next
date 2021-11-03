@@ -6,7 +6,7 @@ import { BaseModel } from '../entities/Model'
 
 export default class ModelManager {
   private static $instance: ModelManager
-  public models: Collection<string, { default: typeof BaseModel; instance: BaseModel; }> = new Collection()
+  public models: Collection<string, { default: typeof BaseModel; instance: BaseModel<typeof BaseModel>; }> = new Collection()
 
   constructor (public storage: Storage) {
   }
@@ -44,7 +44,7 @@ export default class ModelManager {
         }
 
         if (item.default.fileType === 'model') {
-          const model = new Class()
+          const model = new Class() as BaseModel<typeof Class>
           model.setContext(this.storage.addon)
 
           ModelManager.getManager().models.set(model.tableName, {

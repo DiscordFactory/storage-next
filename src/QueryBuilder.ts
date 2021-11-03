@@ -20,12 +20,12 @@ export default class QueryBuilder<M> {
       : inputs.reverse() as unknown as Promise<ResponseResolvable[]>
   }
 
-  public beforeHook (modelName: string, data: ObjectResolvable) {
+  public beforeCreate (modelName: string, data: ObjectResolvable) {
     const manager = ModelManager.getManager()
     const model = manager.models.get(modelName)
-    const hook = model?.instance['beforeCreate']
-    if (hook) {
-      hook(data)
+
+    if (model?.instance['beforeCreate']) {
+      model?.instance['beforeCreate'](data)
     }
   }
 }
