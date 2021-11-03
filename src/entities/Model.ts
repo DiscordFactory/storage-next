@@ -52,9 +52,9 @@ export function Model (tableName: string): (target: Function) => any {
         return Model.$crud.find(value)
       }
 
-      public static async findBy (data: ObjectResolvable): Promise<typeof Model>
-      public static async findBy (columnName: string, value: TypeResolvable): Promise<typeof Model>
-      public static async findBy (data: ObjectResolvable | string, value?: TypeResolvable): Promise<typeof Model> {
+      public static async findBy (data: ObjectResolvable): Promise<typeof Model | undefined>
+      public static async findBy (columnName: string, value: TypeResolvable): Promise<typeof Model | undefined>
+      public static async findBy (data: ObjectResolvable | string, value?: TypeResolvable): Promise<typeof Model | undefined> {
         if (typeof data === 'string' && value) {
           return Model.$crud.findBy(data, value)
         } else {
@@ -150,8 +150,6 @@ export abstract class BaseModel {
   /**
    * @description Retrieves a resource according to a column and a value
    * @param {ObjectResolvable} data
-   * @param {string} columnName
-   * @param {string|boolean|number} value
    */
   public static findBy (data: ObjectResolvable): Promise<BaseModel>
   public static findBy (columnName: string, value: TypeResolvable): Promise<BaseModel>

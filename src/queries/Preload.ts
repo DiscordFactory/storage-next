@@ -38,23 +38,25 @@ export default class Preload<M> {
   public async preload (alias: string) {
     const { relationHasManyModel, relationBelongToModel, relationManyToManyModel } = this.relationExist(alias)
     const { modelName, pivotTableName } = this.serializePivotTableName(alias)
+    const model: string = (relationHasManyModel!.model as unknown as { tableName: string }).tableName
 
     // HasMany relation
     if (relationHasManyModel !== undefined) {
       const classObject = await this.$queryBuilder.getQuery()
         .select('*')
-        .from(this.$queryBuilder.model.tableName) as M[]
+        .from(this.$queryBuilder.model.tableName)
+        .first() as M
 
-      return Promise.all(
-        classObject.map(async (e) => {
+      const columnRelationKey = `${relationHasManyModel.options?.relationKey || `${this.$queryBuilder.model.tableName}Id`}`
+      const b = await this.$queryBuilder.getQuery()
+        .from(model)
+        .where(columnRelationKey, classObject[relationHasManyModel.options?.localKey || 'id'])
 
-          const b = await this.$queryBuilder.getQuery()
-            .from(modelName)
-            .where(`${modelName}.${relationHasManyModel.options?.relationKey || `${this.$queryBuilder.model.tableName}Id`}`, e[relationHasManyModel.options?.localKey || 'id'])
+      b.forEach((role) => {
+        delete role[columnRelationKey]
+      })
 
-          return new GenericModel({ ...e, [alias]: b }, this.$queryBuilder)
-        })
-      )
+      return new GenericModel({ ...classObject, [alias]: b }, this.$queryBuilder)
     }
 
     // BelonTo relation
@@ -64,13 +66,13 @@ export default class Preload<M> {
         .from(this.$queryBuilder.model.tableName) as M[]
 
       return Promise.all(
-        classObject.map(async (e) => {
+        classObject.map(async (abstractModel: M) => {
           const b = await this.$queryBuilder.getQuery()
             .from(alias)
-            .where(`${alias}.${relationBelongToModel.options?.relationKey || 'id'}`, e[relationBelongToModel.options?.localKey || `${alias}Id`])
+            .where(`${alias}.${relationBelongToModel.options?.relationKey || 'id'}`, abstractModel[relationBelongToModel.options?.localKey || `${alias}Id`])
             .first()
 
-          return new GenericModel({ ...e, [alias]: b}, this.$queryBuilder)
+          return new GenericModel({ ...abstractModel, [alias]: b}, this.$queryBuilder)
         })
       )
     }

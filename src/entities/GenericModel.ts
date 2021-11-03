@@ -12,14 +12,14 @@ export default class GenericModel<M> {
   }
 
   public async preload (alias: string) {
-    return await new Preload(this, this.$queryBuilder).preload(alias)
+    return new Preload(this, this.$queryBuilder.queryBuilder).preload(alias)
   }
 
   public related (modelName: string): Related<M> {
-    return new Related(modelName, this['id'], this.$queryBuilder)
+    return new Related(modelName, this['id'], this.$queryBuilder.queryBuilder)
   }
 
-  public async update (value: ObjectResolvable): Promise<M> {
+  public async update (value: ObjectResolvable): Promise<M | undefined> {
     if (this['beforeSave']) {
       this['beforeSave'](value)
     }
