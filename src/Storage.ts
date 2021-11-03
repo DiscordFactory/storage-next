@@ -8,7 +8,7 @@ import ModelManager from './managers/ModelManager'
 export default class Storage {
   public databaseClient: KnexClient | undefined
   public migrationManager: MigrationManager = new MigrationManager(this)
-  public modelManager: ModelManager = new ModelManager(this)
+  public modelManager: ModelManager = ModelManager.getManager(this)
 
   constructor (public addon: Addon) {
   }

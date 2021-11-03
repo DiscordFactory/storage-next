@@ -19,7 +19,7 @@ export function Migration (): (target: Function) => any {
 }
 
 export class MigrationEntity {
-  public static type: string = 'migration'
+  public static fileType: string = 'migration'
   constructor (
     public addon: BaseAddon<Addon>,
     public tableName: string,
