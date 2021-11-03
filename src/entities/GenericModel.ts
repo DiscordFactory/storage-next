@@ -1,11 +1,12 @@
 import Preload from '../queries/Preload'
 import { ObjectResolvable, ResponseResolvable } from '../types'
-import Related from '../queries/Related'
 import Crud from '../queries/Crud'
+import Relation from './Relation'
 
 export default class GenericModel<M> {
+  public relation: Relation<M> = new Relation(this)
   private crud = new Crud(this, this.$queryBuilder.queryBuilder)
-  constructor (fields: ResponseResolvable, private $queryBuilder) {
+  constructor (fields: ResponseResolvable, public $queryBuilder) {
     Object.entries(fields).forEach(([key, value]) => {
       this[key] = value
     })
@@ -13,10 +14,6 @@ export default class GenericModel<M> {
 
   public async preload (alias: string) {
     return new Preload(this, this.$queryBuilder.queryBuilder).preload(alias)
-  }
-
-  public related (modelName: string): Related<M> {
-    return new Related(modelName, this['id'], this.$queryBuilder.queryBuilder)
   }
 
   public async update (value: ObjectResolvable): Promise<M | undefined> {

@@ -3,9 +3,9 @@ import Addon from '../index'
 import { QueryBuilder } from '../QueryBuilder'
 import { Collection } from 'discord.js'
 import { ObjectResolvable, RelationOptions, TypeResolvable } from '../types'
-import Related from '../queries/Related'
 import Crud from '../queries/Crud'
 import { Knex } from 'knex'
+import Relation from './Relation'
 
 export function Model (tableName: string): (target: Function) => any {
   return (target: Function) => {
@@ -121,6 +121,8 @@ export function manyToMany (relation: typeof BaseModel, options?: RelationOption
 }
 
 export abstract class BaseModel {
+  public relation!: Relation<BaseModel>
+
   /**
    * @description Knex query builder entry point
    * @see QueryInterface
@@ -204,15 +206,6 @@ export abstract class BaseModel {
    * @return Promise
    */
   public async delete (): Promise<void> {}
-
-  /**
-   * @description Access point to methods linked to a relationship
-   * @param {string} relationName
-   * @return Promise
-   */
-  public related (relationName: string): Related<BaseModel> {
-    return '' as any
-  }
 
   /**
    * @description Serialize the relationship passed in parameter

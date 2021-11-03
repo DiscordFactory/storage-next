@@ -59,5 +59,5 @@ export {
 
   hasMany,
   belongTo,
-  manyToMany
+  manyToMany,
 }
