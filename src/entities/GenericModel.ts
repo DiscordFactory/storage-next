@@ -20,4 +20,12 @@ export default class GenericModel<Model> {
     this._patch(data)
     return { $persisted: response === 1 }
   }
+
+  public async delete () {
+    const response = await this.$queryBuilder.getQuery()
+      .where({ id: this['id'] })
+      .delete()
+
+    return { $deleted: response === 1 }
+  }
 }
