@@ -1,4 +1,4 @@
-import { CLI, BaseCli } from '@discord-factory/core-next'
+import { BaseCli, CLI } from '@discord-factory/core-next'
 import Addon from '../index'
 import Logger from '@leadcodedev/logger'
 import { MigrationEntity } from '../entities/Migration'

@@ -1,4 +1,4 @@
-import { v1, v3, v4, v5, parse, stringify, version, validate } from 'uuid'
+import { parse, stringify, v1, v3, v4, v5, validate, version } from 'uuid'
 import { InputBuffer, OutputBuffer } from './types'
 
 export default class Uuid {

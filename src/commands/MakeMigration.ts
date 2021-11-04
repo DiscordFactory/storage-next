@@ -1,4 +1,4 @@
-import { CLI, BaseCli, CliContextRuntime } from '@discord-factory/core-next'
+import { BaseCli, CLI, CliContextRuntime } from '@discord-factory/core-next'
 import Addon from '../index'
 import path from 'path'
 import fs from 'fs'

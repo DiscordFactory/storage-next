@@ -1,7 +1,7 @@
 import { Knex } from 'knex'
+import { Model } from '../entities/Model'
 import SchemaBuilder = Knex.SchemaBuilder
 import CreateTableBuilder = Knex.CreateTableBuilder
-import { Model } from '../entities/Model'
 
 export type driverType = 'sqlite3' | 'mariadb'
 

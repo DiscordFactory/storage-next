@@ -22,7 +22,7 @@ export default class QueryBuilder<M> {
 
   public beforeCreate (modelName: string, data: ObjectResolvable) {
     const manager = ModelManager.getManager()
-    const model = manager.models.get(modelName)
+    const model = manager.models.get(`${modelName}s`)
 
     if (model?.instance['beforeCreate']) {
       model?.instance['beforeCreate'](data)
