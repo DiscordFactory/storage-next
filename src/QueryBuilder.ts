@@ -22,10 +22,31 @@ export default class QueryBuilder<M> {
 
   public beforeCreate (modelName: string, data: ObjectResolvable) {
     const manager = ModelManager.getManager()
-    const model = manager.models.get(`${modelName}s`)
+    const model = manager.models.get(modelName) as any
 
-    if (model?.instance['beforeCreate']) {
-      model?.instance['beforeCreate'](data)
+    const hooks = model.instance.hooks
+    if (!hooks) {
+      return
+    }
+
+    if (hooks.get('beforeCreate')) {
+      const beforeCreate = hooks.get('beforeCreate')
+      beforeCreate.forEach((func) => func(data))
+    }
+  }
+
+  public beforeSave (modelName: string, data: ObjectResolvable) {
+    const manager = ModelManager.getManager()
+    const model = manager.models.get(modelName) as any
+
+    const hooks = model.instance.hooks
+    if (!hooks) {
+      return
+    }
+
+    if (hooks.get('beforeSave')) {
+      const beforeSave = hooks.get('beforeSave')
+      beforeSave.forEach((func) => func(data))
     }
   }
 }

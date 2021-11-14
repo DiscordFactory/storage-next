@@ -17,7 +17,7 @@ export interface KnexClient {
   raw (query: string): Promise<unknown[]>
 }
 
-export type TypeResolvable = string | boolean | number
+export type TypeResolvable = string | boolean | number | null | undefined
 
 export interface Registry {}
 

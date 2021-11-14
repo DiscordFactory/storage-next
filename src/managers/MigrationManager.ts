@@ -26,8 +26,8 @@ export default class MigrationManager {
       files.map(async (file) => {
         const res = await import(file.path)
 
-        if (res?.default?.type) {
-          if (res.default.type === 'migration') {
+        if (res?.default?.fileType) {
+          if (res.default.fileType === 'migration') {
             const item = await import(file.path)
             const Class = new item.default()
 

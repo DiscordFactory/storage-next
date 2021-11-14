@@ -1,10 +1,11 @@
-import { Model, BaseModel, Uuid } from '@discord-factory/storage-next'
+import { Model, BaseModel, Uuid, beforeCreate } from '@discord-factory/storage-next'
 
 @Model('$tableName')
 export default class $modelName extends BaseModel {
   public id: string
 
-  public static beforeInsert (model: $modelName) {
+  @beforeCreate()
+  protected createUUID (model: $modelName) {
     model.id = Uuid.generateV4()
   }
 }

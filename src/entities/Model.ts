@@ -1,26 +1,60 @@
 import Addon from '../index'
-import { KnexClient, ObjectResolvable, TypeResolvable } from '../types'
+import { KnexClient, ObjectResolvable, RelationOptions, TypeResolvable } from '../types'
 import QueryBuilder from '../QueryBuilder'
 import { Collection } from 'discord.js'
 
-export function Model (tableName: string): any {
+export function Model (model: string): any {
   return (target: any) => {
-    target.tableName = `${tableName}s`
-    target.modelName = tableName
-    target.prototype.tableName = `${tableName}s`
+    target.tableName = `${model}s`
+    target.modelName = model
+    target.prototype.tableName = `${model}s`
     return target.prototype.constructor
   }
 }
 
-export function beforeCreate (): (target: any) => void {
-  return (target: any) => {
+export function hasMany (relation: typeof BaseModel, options?: RelationOptions) {
+  return function (target: any, propertyKey: string) {
+    if (!target.relations) {
+      target.relations = {
+        hasMany: new Collection<string, { new (): BaseModel<any> }>()
+      }
+    }
+
+    target.relations.hasMany.set(propertyKey, {
+      model: relation,
+      options
+    })
+  } as any
+}
+
+export function beforeCreate (): any {
+  return (target: any, propertyKey: string) => {
+
     if (!target.hooks) {
       target.hooks = new Collection()
+    }
+
+    if (!target.hooks.get('beforeCreate')) {
       target.hooks.set('beforeCreate', [])
     }
 
     const hook = target.hooks.get('beforeCreate')
-    hook.push(target)
+    hook.push(target[propertyKey])
+  }
+}
+
+export function beforeSave (): any {
+  return (target: any, propertyKey: string) => {
+    if (!target.hooks) {
+      target.hooks = new Collection()
+    }
+
+    if (!target.hooks.get('beforeSave')) {
+      target.hooks.set('beforeSave', [])
+    }
+
+    const hook = target.hooks.get('beforeSave')
+    hook.push(target[propertyKey])
   }
 }
 
@@ -28,21 +62,28 @@ export class BaseModel<Model> {
   public static fileType = 'model'
   public static tableName: string
   public static modelName: string
-  // public relation: Relation<typeof BaseModel> = new Relation(target.prototype.constructor)
+  // public relation: Relation<typeof BaseModel> = new Relation(this)
   public addon!: Addon
   public tableName!: string
 
   private static $databaseClient: KnexClient | undefined
+  public $databaseClient: KnexClient | undefined
 
   public setContext (ctx: Addon) {
     this.addon = ctx
-    console.log(this.tableName)
-    // BaseModel.$queryBuilder = new QueryBuilder(this.tableName, ctx.storage.databaseClient!)
     BaseModel.$databaseClient = ctx.storage.databaseClient
   }
 
-  public setQueryBuilder<M> (knexClient: KnexClient) {
-    BaseModel.$databaseClient = knexClient
+  public setLocalQueryBuilder<M> (knexClient: KnexClient) {
+    this.$databaseClient = knexClient
+  }
+
+  private getLocalQueryBuilder () {
+    return new QueryBuilder(this.tableName, this.$databaseClient!)
+  }
+
+  private getLocalQuery () {
+    return this.getLocalQueryBuilder().getQuery()
   }
 
   private _patch (fields: ObjectResolvable) {
@@ -68,16 +109,17 @@ export class BaseModel<Model> {
    * @description Retrieves the entire contents of the table that the model represents
    * @return Promise
    */
-  public static async findAll () {
+  public static async findAll<Model> (): Promise<Model[]> {
     const response = await this.getQuery().where({}) as ObjectResolvable[]
     return response.map((response: ObjectResolvable) => {
-      const model = new BaseModel<BaseModel<unknown>>()
+      const model = new BaseModel<Model>()
 
-      model.setQueryBuilder(this.$databaseClient!)
+      model.tableName = this.tableName
+      model.setLocalQueryBuilder(this.$databaseClient!)
       model._patch(response)
 
       return model
-    })
+    }) as unknown as Model[]
   }
 
   /**
@@ -85,42 +127,46 @@ export class BaseModel<Model> {
    * @param {TypeResolvable} value
    * @see TypeResolvable
    */
-  public static async find (value: TypeResolvable) {
+  public static async find<Model> (value: TypeResolvable): Promise<Model | undefined> {
     const response = await this.getQuery()
       .where({ id: value })
       .first()
 
-    const model = new BaseModel<BaseModel<unknown>>()
+    if (response) {
+      const model = new BaseModel<unknown>()
 
-    model.setQueryBuilder(this.$databaseClient!)
-    model._patch(response)
+      model.tableName= this.tableName
+      model.setLocalQueryBuilder(this.$databaseClient!)
+      model._patch(response)
 
-    return model
+      return model as unknown as Model
+    }
+    return undefined
   }
 
-  public static async findAllWhere (columnName: string, value: TypeResolvable | null | undefined) {
+
+  public static async findAllWhere<Model> (columnName: string, value: TypeResolvable): Promise<Model[]> {
     const response = await this.getQuery().where({ [columnName]: value }) as ObjectResolvable[]
 
-    return response.map((response: ObjectResolvable) => {
-      const model = new BaseModel<BaseModel<unknown>>()
+    return response.filter(response => response)
+      .map((response: ObjectResolvable) => {
+      const model = new BaseModel<unknown>()
 
-      model.setQueryBuilder(this.$databaseClient!)
+      model.tableName = this.tableName
+      model.setLocalQueryBuilder(this.$databaseClient!)
       model._patch(response)
 
       return model
-    })
+    }) as unknown as Model[]
   }
 
   /**
    * @description Retrieves a resource according to a column and a value
    * @param {ObjectResolvable} data
    */
-  public static async findBy (data: ObjectResolvable)
-  public static async findBy (columnName: string, value: TypeResolvable)
-  public static async findBy (data: ObjectResolvable | string, value?: TypeResolvable) {
-    const model = new BaseModel<BaseModel<unknown>>()
-    model.setQueryBuilder(this.$databaseClient!)
-
+  public static async findBy<Model> (data: ObjectResolvable)
+  public static async findBy<Model> (columnName: string, value: TypeResolvable)
+  public static async findBy<Model> (data: ObjectResolvable | string, value?: TypeResolvable): Promise<Model | undefined> {
     const response = typeof data === 'string' && value
       ? await this.getQuery()
         .where({ [data]: value })
@@ -129,9 +175,16 @@ export class BaseModel<Model> {
         .where({ [Object.keys(data)[0]]: Object.values(data)[0] })
         .first()
 
-    model._patch(response)
+    if (response) {
+      const model = new BaseModel<Model>()
 
-    return model
+      model.tableName = this.tableName
+      model.setLocalQueryBuilder(this.$databaseClient!)
+      model._patch(response)
+
+      return model as unknown as Model
+    }
+    return undefined
   }
 
   /**
@@ -139,19 +192,20 @@ export class BaseModel<Model> {
    * @param {ObjectResolvable} data
    * @return Promise
    */
-  public static async create (data: ObjectResolvable) {
+  public static async create<Model> (data: ObjectResolvable): Promise<Model> {
     this.getQueryBuilder().beforeCreate(this.tableName, data)
     await this.getQuery().insert(data)
 
     const response = await this.getQueryBuilder()
       .lastInsert() as ObjectResolvable
 
-    const model = new BaseModel<BaseModel<unknown>>()
+    const model = new BaseModel<unknown>()
 
-    model.setQueryBuilder(this.$databaseClient!)
+    model.tableName = this.tableName
+    model.setLocalQueryBuilder(this.$databaseClient!)
     model._patch(response)
 
-    return model
+    return model as unknown as Model
   }
 
   /**
@@ -159,7 +213,7 @@ export class BaseModel<Model> {
    * @param {ObjectResolvable[]} data
    * @return Promise
    */
-  public static async createMany (data: ObjectResolvable[]): Promise<unknown[]> {
+  public static async createMany<Model> (data: ObjectResolvable[]): Promise<Model[]> {
     await Promise.all(
       data.map(async (data: ObjectResolvable) => {
         this.getQueryBuilder().beforeCreate(this.modelName, data)
@@ -171,17 +225,19 @@ export class BaseModel<Model> {
       .lastInsert(data.length) as ObjectResolvable[]
 
     return responses.map((response: ObjectResolvable) => {
-      const model = new BaseModel<BaseModel<unknown>>()
+      const model = new BaseModel<unknown>()
 
-      model.setQueryBuilder(this.$databaseClient!)
+      model.tableName = this.tableName
+      model.setLocalQueryBuilder(this.$databaseClient!)
       model._patch(response)
 
-      return model
+      return model as unknown as Model
     })
   }
 
-  public async update (data: ObjectResolvable) {
-    const response = await BaseModel.getQuery()
+  public async update (data: ObjectResolvable): Promise<{$persisted: boolean }> {
+    this.getLocalQueryBuilder().beforeSave(this.tableName, data)
+    const response = await this.getLocalQuery()
       .where({ id: this['id'] })
       .update(data)
 
@@ -189,8 +245,8 @@ export class BaseModel<Model> {
     return { $persisted: response === 1 }
   }
 
-  public async delete () {
-    const response = await BaseModel.getQuery()
+  public async delete (): Promise<{$deleted: boolean }> {
+    const response = await this.getLocalQuery()
       .where({ id: this['id'] })
       .delete()
 

@@ -28,7 +28,7 @@ export default class MakeMigration extends BaseCli<Addon> {
       await fs.promises.mkdir(path.join(process.cwd(), 'src', location.dir), { recursive: true })
       const fileData = templateFile
         .replace(/\$migrationName/g, `${filenameUpper}_${Date.now()}`)
-        .replace(/\$tableName/g, filenameUpper.toLowerCase())
+        .replace(/\$tableName/g, filenameUpper.toLowerCase() + 's')
 
       await fs.promises.writeFile(targetFile, fileData)
       Logger.send('info', `File was created in ${targetFile.replace(/\\/g, '\\\\')}`)
