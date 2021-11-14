@@ -144,9 +144,20 @@ export class BaseModel<Model> {
     return undefined
   }
 
+  public static async where<Model> (params: { [K: string]: TypeResolvable }): Promise<Model[]>
+  public static async where<Model> (columnName: string, value: TypeResolvable): Promise<Model[]>
+  public static async where<Model> (params: { [K: string]: TypeResolvable } | string, value?: TypeResolvable) {
+    const query = this.getQuery()
 
-  public static async findAllWhere<Model> (columnName: string, value: TypeResolvable): Promise<Model[]> {
-    const response = await this.getQuery().where({ [columnName]: value }) as ObjectResolvable[]
+    if (typeof params === 'string') {
+      query.where({ [params]: value })
+    } else {
+      Object.entries(params).forEach(([key, value]) => {
+        query.where({ [key]: value })
+      })
+    }
+
+    const response = await query as ObjectResolvable[]
 
     return response.filter(response => response)
       .map((response: ObjectResolvable) => {
